@@ -1,0 +1,19 @@
+﻿@using IdentityProfileApp.Web.BLL
+
+@{
+    var userInDb = ActiveUserBLL.GetUser(User.Identity.Name);
+}
+<li class="dropdown">
+    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+        <img alt="" src="~/Areas/Admin/Content/img/avatar1_small.jpg">
+        <span class="username">@userInDb.Name @userInDb.Surname</span>
+        <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu extended logout">
+        @*<div class="log-arrow-up"></div>*@
+        <li><a href="#"><i class=" icon-suitcase"></i>Profile</a></li>
+        <li><a href="#"><i class="icon-cog"></i> Settings</a></li>
+        <li><a href="#"><i class="icon-bell-alt"></i> Notification</a></li>
+        <li><a href="@Url.Action("Login","Account",new { area=""})"><i class="icon-key"></i> Log Out</a></li>
+    </ul>
+</li>

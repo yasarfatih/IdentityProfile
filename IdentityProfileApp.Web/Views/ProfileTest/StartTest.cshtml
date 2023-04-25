@@ -1,0 +1,179 @@
+﻿@model List<IdentityProfileApp.Domain.Entities.ViewModels.QuestionAnswerVM>
+@using IdentityProfileApp.Utils.AppGlobalization.Helper
+
+@{
+    string langCode = HttpContext.Current.Request.Cookies.Get("Language").Value;
+}
+<section class="no-padding equalize" data-equalize-item=".text-box">
+    <div class="row col-no-margin">
+        <!--Box 1-->
+        <div class="col-sm-6 col-lg-3">
+            <div class="text-box hover-effect text-dark">
+                <a href="#">
+                    <i class="fab fa-angellist"></i>
+                    <h3>Doğru cevap</h3>
+                    <p>Doğru cevap</p>
+                </a>
+            </div>
+        </div>
+        <!--End: Box 1-->
+        <!--Box 2-->
+        <div class="col-sm-6 col-lg-3">
+            <div class="text-box hover-effect text-dark">
+                <a href="#">
+                    <i class="far fa-lightbulb"></i>
+                    <h3>Düşün </h3>
+                    <p>Düşünerek cevap ver</p>
+                </a>
+            </div>
+        </div>
+        <!--End: Box 2-->
+        <!--Box 3-->
+        <div class="col-sm-6 col-lg-3">
+            <div class="text-box hover-effect text-dark">
+                <a href="#">
+                    <i class="far fa-clock"></i>
+                    <h3>Yeterli zaman var</h3>
+                    <p>Acele etme yeterli zamanın var</p>
+                </a>
+            </div>
+        </div>
+        <!--End: Box 3-->
+        <!--Box 4-->
+        <div class="col-sm-6 col-lg-3">
+            <div class="text-box hover-effect text-dark">
+                <a href="#">
+                    <i class="fa fa-check-circle"></i>
+                    <h3>Boş soru bırakma</h3>
+                    <p>Bütün soruları cevapla</p>
+                </a>
+            </div>
+        </div>
+        <!--End: Box 4-->
+    </div>
+</section>
+@{
+    for (int i = 0; i < Model.Count(); i++)
+    {
+        <div class="row question">
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8" style="text-align:center">
+                <div class="accordion">
+                    <div class="ac-item ac-active">
+                        <h4 style="font-weight: 500;position: relative;padding-right: 10px;margin: 0;font-size: 1em;user-select: none;"> @Html.Raw(Model[i].Question.Body)</h4>
+                        <div class="ac-content" style="">
+                            <div class="row test" style="align-items:center;display:flex;justify-content:center" id="@Model[i].Question.Id">
+                                <div class="col-sm-2">
+                                    <span class="text-success"><b>@GlobalHelper.GetTextFromResourceCode("1000")</b></span>
+                                </div>
+                                <div class="col-sm-1">
+                                    <label class="p-radio radio-color-success" style="font-size: 240%;">
+                                        @Html.RadioButtonFor(model => Model[i].Answers, IdentityProfileApp.Domain.Entities.Enums.Answers.Accept, new { name = "radio_size", @class = Model[i].Question.Id })
+                                        <span class="p-radio-style border-success" style="border-color:red"></span>
+                                    </label>
+                                </div>
+                                <div class="col-sm-1">
+                                    <label class="p-radio radio-color-success" style="font-size:190%;">
+                                        @Html.RadioButtonFor(model => Model[i].Answers, IdentityProfileApp.Domain.Entities.Enums.Answers.RarelyAccept, new { name = "radio_size", @class = Model[i].Question.Id })
+                                        <span class="p-radio-style"></span>
+                                    </label>
+                                </div>
+                                <div class="col-sm-1">
+                                    <label class="p-radio radio-color-secondary" style="font-size:150%;">
+                                        @Html.RadioButtonFor(model => Model[i].Answers, IdentityProfileApp.Domain.Entities.Enums.Answers.NotSure, new { name = "radio_size", @class = Model[i].Question.Id })
+                                        <span class="p-radio-style"></span>
+                                    </label>
+                                </div>
+                                <div class="col-sm-1">
+                                    <label class="p-radio radio-color-warning" style="font-size:190%;">
+                                        @Html.RadioButtonFor(model => Model[i].Answers, IdentityProfileApp.Domain.Entities.Enums.Answers.RarelyReject, new { name = "radio_size", @class = Model[i].Question.Id })
+                                        <span class="p-radio-style"></span>
+                                    </label>
+                                </div>
+                                <div class="col-sm-1">
+                                    <label class="p-radio radio-color-warning" style="font-size:240%;">
+                                        @Html.RadioButtonFor(model => Model[i].Answers, IdentityProfileApp.Domain.Entities.Enums.Answers.Reject, new { name = "radio_size", @class = Model[i].Question.Id })
+                                        <span class="p-radio-style"></span>
+                                    </label>
+                                </div>
+                                <div class="col-sm-2">
+                                    <span class="text-warning"><b>@GlobalHelper.GetTextFromResourceCode("1001")</b></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-12">
+            <div class="row" style="align-items:center;display:flex;justify-content:center;margin-top:15px;margin-bottom:15px">
+                <button type="button" class="btn btn-success btn-creative btn-icon-holder btn-shadow btn-light-hover submit">
+                    Sonuçları Gör<i class="icon-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+}
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".submit").click(function () {
+                $(this).prop("disabled", true);
+                // add spinner to button
+                $(this).html(
+                    `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sonuçları Gör <i class="icon-chevron-right">`
+                );
+                var unchecked = false;
+                var idList = [""];
+                var radiolist = [""];
+                idList = [];
+                radiolist = [];
+
+                $("input:radio").each(function () {
+                    if ($(this).prop('checked')) {
+                        idList.push($(this).attr('class'));
+                        radiolist.push($(this).attr('value'));
+                    }
+                })
+
+                if ($("div.test").length !== radiolist.length) {
+                    unchecked = true;
+                }
+                if (unchecked === false) {
+                     $.ajax(
+                    {
+                        url: "@Url.Action("FinishTest","ProfileTest",new { lang=langCode})",
+                        type: "GET",
+                        data: { questionIds: JSON.stringify(idList), answers: JSON.stringify(radiolist) },
+                        dataType: "Json",
+                        success: function (success) {
+                            if (success === true) {
+                                var url = '@Url.Action("Result","UserProfile")';
+                                window.location.href = url;
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    }
+                )
+                }
+                else {
+                    notifyAlert("warning", "Uyarı", "Boş Bırakmayın", "icon-check-circle", { "in": "bounceIn", "out": "bounceOut", "from": "top", "align": "center", "timer": "1000" });
+                    $(this).prop("disabled", false);
+                    // add spinner to button
+                    $(this).html(
+                        `Sonuçları Gör <i class="icon-chevron-right">`
+                    );
+                }
+
+            });
+        });
+    </script>
+}

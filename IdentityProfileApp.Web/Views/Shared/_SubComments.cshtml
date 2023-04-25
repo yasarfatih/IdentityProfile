@@ -1,0 +1,45 @@
+﻿@model List<IdentityProfileApp.Domain.Entities.ViewModels.SubCommentVM>
+@using IdentityProfileApp.Web.BLL
+@using IdentityProfileApp.Domain.Entities.ViewModels
+@{
+    for (int i = 0; i < Model.Count; i++)
+    {
+        <div class="comment" id="comment-@Model[i].Replier.Id">
+            <input type="hidden" value="@Model[i].Comment.Id" class="reply" />
+            <div class="image"><img alt="" src="/Content/User/Avatar/@Model[i].Replier.Image" class="avatar"></div>
+            <div class="text">
+                <h5 class="name">@string.Format("{0} {1}", Model[i].Replier.Name, Model[i].Replier.Surname)</h5>
+                <span class="comment_date">@string.Format("Posted at {0}", Model[i].Comment.CreateDate)</span>
+                <span class="reply-to">@string.Format("replied to {0}{1}", Model[i].Replied.Name, Model[i].Replied.Surname)</span>
+                @if (!string.IsNullOrEmpty(User.Identity.Name))
+                {
+                    <a href="#modalReply" id="@Model[i].Comment.Id" class="reply" data-lightbox="inline">Reply</a>
+                }
+                <div class="text_holder">
+                    <p>@Model[i].Comment.Message</p>
+                </div>
+            </div>
+        </div>
+
+        if (ArticleBLL.SubCommentsExist(Model[i].Comment.Id))
+        {
+            var subComments = ArticleBLL.GetSubComments(Model[i].Comment.Id);
+
+            if (subComments.Count > 0)
+            {
+                List<SubCommentVM> subCommentVM = new List<SubCommentVM>();
+                foreach (var subComment in subComments)
+                {
+                    var replier = ArticleBLL.GetUserById(subComment.UserId);
+                    subCommentVM.Add(new SubCommentVM()
+                    {
+                        Comment = subComment,
+                        Replier = replier,
+                        Replied = Model[i].Replier
+                    });
+                }
+                Html.RenderPartial("_SubComments", subCommentVM);
+            }
+        }
+    }
+}

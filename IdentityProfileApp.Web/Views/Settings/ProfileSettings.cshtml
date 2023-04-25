@@ -1,0 +1,139 @@
+﻿@model IdentityProfileApp.Domain.Entities.ViewModels.SettingsVM
+@using IdentityProfileApp.Web.StaticClasses;
+@using IdentityProfileApp.Domain.Entities.Enums;
+
+<div class="row m-t-50">
+    <div class="col-lg-1"></div>
+    <div class="content col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <span class="h4">Account details</span>
+                <p class="text-muted">
+                    You will receive an email notification to confirm this action in
+                    order to completed changes.
+                </p>
+            </div>
+            <div class="card-body">
+                @*<form method="post" class="form-transparent-grey needs-validation" id="accountSettings">*@
+                @using (Html.BeginForm("Update", "Settings", FormMethod.Post, new { @class = "form-transparent-grey needs-validation", enctype = "multipart/form-data" }))
+                {
+                    <div class="row">
+
+                        <div class="col-lg-6 form-group">
+                            <div class="input-group">
+                                <div class="col-2">
+                                    @{
+                                        string avatar;
+                                        var isAvatarExist = Server.MapPath(string.Format("~/Content/User/Avatar/{0}.jpg", Model.User.Id)).IsEmpty();
+
+                                        if (isAvatarExist)
+                                        { avatar = Model.User.Id.ToString(); }
+                                        else
+                                        { avatar = (Model.User.Gender == Gender.Female ? "female" : "male"); }
+
+                                    }
+                                    <img src="~/Content/User/Avatar/@string.Format("{0}.jpg",avatar)" class="avatar avatar-lg align-items-md-start">
+                                </div>
+                                @Html.EditorFor(m => m.PostedImage)
+                            </div>
+                        </div>
+                        <div class="col-lg-12 form-group ">
+                            <label class="sr-only">First Name</label>
+                            @Html.EditorFor(model => model.User.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = Html.DisplayNameFor(m => m.User.Name), style = "text-align:left;cursor:auto" } })
+                            <div class="invalid-feedback">
+                                @Html.ValidationMessageFor(model => model.User.Name)
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 form-group">
+                            <label class="sr-only">Last Name</label>
+                            @Html.EditorFor(model => model.User.Surname, new { htmlAttributes = new { @class = "form-control", @placeholder = Html.DisplayNameFor(m => m.User.Surname), style = "text-align:left;cursor:auto", required = "true", maxlength = "30" } })
+
+                        </div>
+                        <br />
+                        <div class="col-lg-12 form-group">
+                            <label class="sr-only">Username</label>
+                            @Html.DropDownListFor(model => model.User.CityId, CityDistrictStatics.GetCities(), "Şehir Seçiniz...", htmlAttributes: new { @class = "form-control custom-select" })
+                            <span class="invalid-feedback">
+                                @Html.ValidationMessageFor(model => model.User.CityId)
+                            </span>
+                        </div>
+                        <div class="col-lg-12 form-group">
+                            <label class="sr-only">Password</label>
+                            @Html.DropDownListFor(model => model.User.DistrictId, Model == null ? new List<SelectListItem>() : CityDistrictStatics.GetDistrictsByCityId(Model.User.CityId), "İlçe Seçiniz...", htmlAttributes: new { @class = "form-control custom-select" })
+                            <span class="invalid-feedback">
+                                @Html.ValidationMessageFor(model => model.User.DistrictId)
+                            </span>
+                        </div>
+
+                        <br />
+                        <div class="col-lg-12 form-group">
+                            <label class="sr-only">Apartment, suite, unit etc.</label>
+                            @Html.EditorFor(model => model.User.EmailAdress, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(m => m.User.EmailAdress), style = "text-align:left;cursor:auto" } })
+                        </div>
+                        <div class="col-lg-12 form-group">
+                            <label class="sr-only">Password</label>
+                            @Html.EditorFor(model => model.User.Password, new { htmlAttributes = new { @class = "form-control", placeholder = Html.DisplayNameFor(m => m.User.Password), style = "text-align:left;cursor:auto" } })
+                        </div>
+                        <div class="col-lg-12 form-group">
+                            <button class="btn" type="submit"> Update Changes </button>
+                        </div>
+                    </div>
+                }
+                @*</form>*@
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-1"></div>
+</div>
+
+
+
+@section scripts{
+    @Scripts.Render("~/Admin/cropper/js")
+    <script>
+        $().ready(() => {
+            $("#PostedImage").on("change", () => {
+                UploadImage(1, 'PostedImage');
+            });
+
+
+              $("#User_CityId").change(function () {
+            var id = $('#User_CityId option:selected').val();
+            $.ajax(
+                {
+                    url: '@Url.Action("GetDistricts", "Account")',
+                    type: 'GET',
+                    data: { id: id },
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        var select = $("#User_DistrictId");
+                        var htmlOptions = [];
+                        if (data.length) {
+                            for (var i = -1; i < data.length; i  ) {
+                                if (i == -1) {
+                                    html = '<option value="'+-1+'">'+"İlçe Seçiniz..."+'</option>';
+                                }
+                                else {
+                                    html = '<option value="'+data[i].Value+'">'+data[i].Text+'</option>';
+                                }
+                                htmlOptions[htmlOptions.length] = html;
+                            }
+                            select.empty().append(htmlOptions.join(''));
+                        }
+                    },
+                    error: function () {
+
+                    }
+                })
+        });
+        });
+
+
+
+    </script>
+}
+@section styles{
+    @Styles.Render("~/Admin/cropper/css")
+
+}

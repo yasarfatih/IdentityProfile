@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/Areas/Admin/Content/css/bootstrap-reset.css" rel="stylesheet">
+    <link href="~/Content/css/style.css" rel="stylesheet" />
+    <link href="~/Content/css/style-responsive.css" rel="stylesheet" />
+    <link href="~/Content/css/plugins.css" rel="stylesheet" />
+    @*<link href="~/Content/css/Site.css" rel="stylesheet" />*@
+
+    @*<link href="~/Content/jquery.validate.mvc.css" rel="stylesheet" />*@
+</head>
+<body>
+
+    @Html.Partial("_MessagePartial")
+    @RenderBody()
+
+</body>
+</html>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootsrapt")
+<script src="~/Content/js/plugins.js"></script>
+<script src="~/Content/js/functions.js"></script>
+<script src="~/Content/js/App.js"></script>
+@RenderSection("scripts", required: false)
+<script>
+    $().ready(function () {
+        var interval = 100;
+        var expected = Date.now() + interval;
+        setTimeout(step, interval);
+        function step() {
+            var dt = Date.now() - expected;
+            if (dt > interval) {
+                return;
+            }
+            var success = document.getElementById("success");
+            var error = document.getElementById("error");
+            if (success !== null) {
+                $.notifyAlert("success", "Hata", error.value, "icon-check-circle", { "in": "bounceIn", "out": "bounceOut", "from": "top", "align": "center", "timer": "2000" });
+            }
+            else if (error !== null) {
+                interval = 0;
+                $.notifyAlert("warning", "Hata", error.value, "icon-check-circle", { "in": "bounceIn", "out": "bounceOut", "from": "top", "align": "center", "timer": "5000" });
+                $("#error").remove();
+            }
+            interval = 1000;
+            expected += interval;
+            setTimeout(step, Math.max(0, interval - dt));
+        }
+    });
+</script>

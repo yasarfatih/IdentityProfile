@@ -1,0 +1,123 @@
+﻿@model IdentityProfileApp.Domain.Entities.ViewModels.ProfileFeatureVM
+@using IdentityProfileApp.Utils.Extensions
+@{ ViewBag.Title = "Profile Oluştur";}
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+    @using (Html.BeginForm("Create", "Profile", FormMethod.Post, new { @class = "form-transparent-grey needs-validation", id = "profileCreate", novalidate = "false" }))
+    {
+        @Html.AntiForgeryToken()
+
+
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Profile.Title, htmlAttributes: new { @class = "control-label col-md-2", id = "title" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.Profile.Title, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Profile.Name, htmlAttributes: new { @class = "control-label col-md-2", id = "title" })
+                <div class="col-md-10">
+                    @Html.DropDownList("Profiles",
+          new SelectList(Enum.GetValues(typeof(IdentityProfileApp.Domain.Entities.Enums.ProfileParts))),
+          new { @class = "form-control js-example-basic-multiple", id = "profilesMultiple", multiple = "multiple", required = "true" })
+                </div>
+            </div>
+
+
+
+
+            @*<div class="form-group">
+                    @Html.LabelFor(model => model.Profile.Part1, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EnumDropDownListFor(model => model.Profile.Part1, new { @class = "form-control" }
+                   )
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Profile.Part2, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EnumDropDownListFor(model => model.Profile.Part2, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Profile.Part3, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EnumDropDownListFor(model => model.Profile.Part3, new { @class = "form-control", })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Profile.Part4, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EnumDropDownListFor(model => model.Profile.Part4, new { @class = "form-control" })
+                    </div>
+                </div>*@
+            @for (int i = 0; i < Model.Features.Count; i++)
+            {
+                string id = string.Format("feature_{0}", i.ToString());
+                <div class="form-group row">
+                    @Html.HiddenFor(c => Model.Features[i].Characteristic)
+                    @Html.HiddenFor(c => Model.Features[i].Order)
+                    <label class="col-sm-2">@Model.Features[i].Characteristic.GetDisplayName()</label>
+                    <div class="col-sm-10">
+                        @Html.TextAreaFor(model => Model.Features[i].Body, new
+                        {
+                            htmlAttributes = new
+                            {
+                                @class = "form-control",
+                                id = id,
+                                required ="true"
+                            }
+                        })
+                    </div>
+                    @Html.ValidationMessageFor(model => Model.Features[i].Body, "", new { @class = "text-danger" })
+                </div>
+            }
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" id="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+
+    }
+</body>
+@section scripts{
+
+    @Scripts.Render("~/Admin/ckEditor")
+    @Scripts.Render("~/Admin/Select2/js")
+    <script src="~/Content/js/functions.js"></script>
+    <script src="~/Content/plugins/validate/validate.min.js"></script>
+    <script src="~/Content/plugins/validate/valildate-rules.js"></script>
+    <script type="text/javascript">
+        $("textarea").each(function () {
+            $.CK($(this).attr('id').toString(), '@Url.Content("~/Areas/Admin/Content/plugins/ck/ckfinder/")');
+        });
+
+        $(document).ready(function () {
+            $('.js-example-basic-multiple').select2(
+                {
+                    placeholder:"Part Seçiniz"
+                });
+            $("#submit").click(function () {
+                var selectedProfiles = $("#profilesMultiple").select2('data');
+                if (selectedProfiles.length !== 4) {
+                    alert("4 tane profil giriniz");
+                    return false;
+                }
+            });
+
+        });
+    </script>
+
+}
+@section styles{
+    @Styles.Render("~/Admin/Select2/css")
+}

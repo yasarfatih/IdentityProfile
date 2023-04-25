@@ -1,0 +1,111 @@
+﻿@model PagedList<IdentityProfileApp.Domain.Entities.Models.Article>
+@using IdentityProfileApp.Domain.Entities.DTO;
+@using IdentityProfileApp.Web.BLL;
+@using PagedList;
+@using PagedList.Mvc;
+<section id="page-content">
+    <div class="container">
+        <!-- post content -->
+        <!-- Portfolio Filter -->
+        @{
+            var categories = ArticleBLL.GetCategories();
+        }
+        <nav class="grid-filter gf-outline" data-layout="#blog">
+            <ul>
+                <li class="active"><a href="#" data-category="*">Show All</a></li>
+                @foreach (var category in categories)
+                {
+                    <li><a href="#" data-category=".@category.CategoryName">@category.CategoryName</a></li>
+                }
+            </ul>
+            <div class="grid-active-title">Show All</div>
+        </nav>
+        <!-- end: Portfolio Filter -->
+        <!-- Blog -->
+        <div id="blog" class="grid-layout post-3-columns m-b-30" data-item="post-item">
+            <!-- Post item-->
+            @for (int i = 0; i < Model.Count(); i++)
+            {
+                <div data-category="@Model[i].Category.CategoryName" class="post-item border @Model[i].Category.CategoryName">
+                    <div class="post-item-wrap">
+                        @Html.Partial("_BlogMediaPartial", new BlogModel() { Articles = Model.ToList(), MediaType = Model.ToList()[i].MediaType, index = i })
+                        <div class="post-item-description">
+                            <span class="post-meta-date"><i class="fa fa-calendar-o"></i>@Model[i].CreateDate</span>
+                            <span class="post-meta-comments"><a href="@Url.Action("Detail", "Blog", new { Id = Model.ToList()[i].Id })"><i class="fa fa-comments-o"></i>@Model[i].Comments.Count</a></span>
+                            <h2>
+                                <a href="@Url.Action("Detail", "Blog", new { Id = Model.ToList()[i].Id })">
+                                    @Html.Raw(Model.ToList()[i].Header)
+                                </a>
+                            </h2>
+                            <p>@Model[i].Summary</p>
+                            <a href="@Url.Action("Detail", "Blog", new { Id = Model.ToList()[i].Id })" class="item-link">Detaya git <i class="icon-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+
+
+        @*@Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page }))*@
+
+        @{
+            <div class="align-items-center">
+                <ul class="pagination">
+                    <li class="page-item previous"><a class="page-link" href="#"><i class="fa fa-angle-left"></i></a></li>
+                    @for (int i = 1; i <= ((IPagedList)Model).PageCount; i++)
+                    {
+                        <li class="page-item"><a class="page-link" href="@Url.Action("Index","Blog",new {page= i.ToString(),lang=HttpContext.Current.Request.Cookies.Get("Language").Value})">@i.ToString()</a></li>
+                    }
+                    <li class="page-item next"><a class="page-link" href="#"><i class="fa fa-angle-right"></i></a></li>
+                </ul>
+            </div>
+        }
+    </div>
+    <!-- end: post content -->
+</section> <!-- end: Content -->
+
+
+@section scripts{
+    <script>
+        $().ready(function () {
+
+            let current;
+            var pageOnUrl = window.location.search;
+            if (pageOnUrl.length != 0) {
+                current = parseInt(pageOnUrl.split('=')[1]);
+            }
+            else
+                current = 1;
+
+            var paginationItems = $("li.page-item:not(.previous):not(.next)")
+            paginationItems.each(function () {
+                var href = $(this).children("a").attr("href");
+                if (href.split("=")[1] == current) {
+                    $(this).addClass("active");
+                }
+            });
+            var lang = MultiLanguage.Cookies.getCookie("Language");
+            var previousLink = "/" + lang + "/" + "Blog?page=" + (parseInt(current) - 1);
+            var nextLink = "/" + lang + "/" + "Blog?page=" + (parseInt(current) + 1);
+
+            $("li.previous").children("a").first().attr("href", previousLink)
+            $("li.next").children("a").first().attr("href", nextLink)
+
+            if (current == 1) {
+                $("li.previous").children("a").first().attr("href", "#");
+                $("li.previous").children("a").first().click(function (e) {
+                    e.preventDefault();
+                });
+            }
+            else if (current == paginationItems.length) {
+                $("li.next").children("a").first().click(function () {
+                    $(this).attr("href", "");
+                    return false;
+                });
+            }
+
+        });
+    </script>
+
+}

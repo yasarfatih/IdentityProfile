@@ -1,0 +1,78 @@
+﻿@model IdentityProfileApp.Domain.Entities.ViewModels.UserVM
+@{ ViewBag.Title = "Kullanıcı Güncelle";}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+</head>
+<body>
+    @using (Html.BeginForm("Update", "User", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            @Html.HiddenFor(model => model.User.Id)
+            @Html.HiddenFor(model => model.User.CreateDate)
+            @Html.HiddenFor(model => model.User.Password)
+            @Html.HiddenFor(model => model.ConfirmPassword)
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => Model.User.Name, new { htmlAttributes = new { @class = "form-control" } })
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.Surname, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.User.Surname, new { htmlAttributes = new { @class = "form-control" } })
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.MobileTelNo, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.User.MobileTelNo, new { htmlAttributes = new { @class = "form-control" } })
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.EmailAdress, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.User.EmailAdress, new { htmlAttributes = new { @class = "form-control" } })
+
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserRoles, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @for (int i = 0; i < Model.UserRoles.Count; i++)
+                    {
+                        @Html.HiddenFor(m => m.UserRoles[i].RoleId)
+                        @Html.HiddenFor(m => m.UserRoles[i].RoleName)
+                        @Html.CheckBoxFor(m => m.UserRoles[i].IsChecked) @:&nbsp; @Model.UserRoles[i].RoleName
+                    }
+
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.User.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EnumDropDownListFor(m => m.User.Gender, new { @class = "form-control " })
+                </div>
+            </div>
+            <div class="row form-group">
+                <div class="col-md-offset-2 col-2">
+                    <input type="submit" class="btn btn-success form-control" value="Güncelle" />
+                </div>
+                <div>
+                    <a href="@Url.Action("List","User")" class="btn btn-info">Kullanıcı listesine dön &nbsp;<i class="fas fa-undo"></i></a>
+                </div>
+            </div>
+        </div>
+    }
+</body>
+</html>

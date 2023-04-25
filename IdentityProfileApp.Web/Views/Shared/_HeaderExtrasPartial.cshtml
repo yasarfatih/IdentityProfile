@@ -1,0 +1,70 @@
+﻿@using IdentityProfileApp.Web.BLL
+<!--Header Extras-->
+
+@{
+    var userInDb = ActiveUserBLL.GetUser(User.Identity.Name);
+
+    var langCode = HttpContext.Current.Request.Cookies.Get("Language").Value;
+}
+<div class="header-extras" style="align-items:center;display:flex;justify-content:center">
+
+    @*<div>
+            <a id="btn-search" href="#"> <i class="icon-search"></i></a>
+        </div>
+        &nbsp;*@
+    @{
+        if (string.IsNullOrEmpty(User.Identity.Name))
+        {
+            <div>
+                <a href="@Url.Action("Login","Account",new {@returnUrl = Url.Action(ViewContext.RouteData.Values["action"].ToString(), ViewContext.RouteData.Values["controller"].ToString())})"><i class="icon-log-in"></i></a>
+            </div>
+
+        }
+        else
+        {
+            <div class="p-dropdown" style="margin-top:0;font-size:inherit">
+                <a href="#"><i class="icon-user"></i></a>
+                <div class="p-dropdown-content">
+                    <div class="widget-myaccount">
+                        <div class="d-block">
+                            <img class="avatar avatar-lg" src="/Content/images/team/6.jpg">
+                        </div>
+                        <span>@userInDb.Name @userInDb.Surname</span>
+                        @if (userInDb.UserProfiles.Count > 0)
+                        {
+                            var userProfile = ActiveUserBLL.GetUserProfile(userInDb.Id);
+                            <p class="text-muted">@string.Format("{0}/{1}", userProfile.Title, userProfile.Name)</p>
+                        }
+                        <ul class="text-center">
+                            @if (userInDb.UserProfiles.Count > 0)
+                            {
+                                <li><a href="@Url.Action("MyProfile","UserProfile")"><i class="icon-user"></i>My profile</a></li>
+                            }
+                            else
+                            {
+                                <li><a href="@Url.Action("StartTest","ProfileTest")"><i class="icon-user-check"></i>Start Test</a></li>
+                            }
+
+                            <li><a href="@Url.Action("ProfileSettings","Settings",new { id=userInDb.Id})"><i class="icon-settings"></i>Settings</a></li>
+                            <li><a href="@Url.Action("Logout","Account")"><i class="icon-log-out"></i>Sing Out</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    &nbsp;&nbsp;
+    <div class="p-dropdown">
+        <a href="#"><i class="icon-globe"></i><span class="selectedLang">@HttpContext.Current.Request.Cookies.Get("Language").Value.Split('-')[0].ToUpper()</span></a>
+        <ul class="p-dropdown-content language">
+            @{
+                var langList = UICultureBLL.LanguageLists();
+                for (int i = 0; i < langList.Count(); i++)
+                {
+                    <li id="@langList[i].ResourceCode"><a href="#">@langList[i].ResourceName</a></li>
+                }
+            }
+        </ul>
+    </div>
+</div>
+<!--end: Header Extras-->

@@ -1,0 +1,25 @@
+﻿@model IdentityProfileApp.Domain.Entities.DTO.BlogModel
+@using IdentityProfileApp.Web.BLL
+
+@if (Model.MediaType == IdentityProfileApp.Domain.Entities.Enums.MediaType.Image)
+{
+    <div class="post-image">
+        <a href="@Url.Action("Detail","Blog",new { id= Model.Articles[Model.index].Id})">
+            <img alt="" src="~/Content/Article/Image/@Model.Articles[Model.index].Image">
+        </a>
+        <span class="post-meta-category"><a href="">@ArticleBLL.GetCategoryById(Model.Articles[Model.index].CategoryId).CategoryName</a></span>
+    </div>
+}
+@if (Model.MediaType == IdentityProfileApp.Domain.Entities.Enums.MediaType.Video)
+{
+    <div class="post-video">
+        <iframe width="560" height="320" src="@Model.Articles[Model.index].VideoSource" frameborder="0" allowfullscreen></iframe>
+        <span class="post-meta-category"><a href="">@ArticleBLL.GetCategoryById(Model.Articles[Model.index].CategoryId).CategoryName</a></span>
+    </div>
+}
+
+
+
+
+
+

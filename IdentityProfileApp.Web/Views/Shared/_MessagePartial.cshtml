@@ -1,0 +1,11 @@
+﻿@{
+    if (TempData["success"] != null)
+    {
+        @Html.Hidden("success", TempData["success"], new { id = "success" });
+    }
+
+    if (TempData["error"] != null)
+    {
+        @Html.Hidden("error", TempData["error"], new { id = "error" });
+    }
+}

@@ -1,0 +1,51 @@
+﻿@model IdentityProfileApp.Domain.Entities.Models.Question
+@{ ViewBag.Title = "Soru Güncelle";}
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.HiddenFor(x => Model.Id)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label class="col-md-2 control-label Bold ">Soru:</label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Body, new { @id = Model.Id })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label Bold ">Soru:</label>
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(model => model.AgreePart, "Seçiniz", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label Bold ">Soru:</label>
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(model => model.DisagreePart, "Seçiniz", new { @class = "form-control" })
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-offset-2 col-2">
+            <input type="submit" class="btn btn-success form-control" value="Kaydet" />
+        </div>
+        <div>
+            <a href="@Url.Action("List","Question")" class="btn btn-info">Soru listesine Dön &nbsp;<i class="fas fa-undo"></i></a>
+        </div>
+    </div>
+}
+@section scripts{
+    @Scripts.Render("~/Admin/ckEditor")
+    <script type="text/javascript">
+    $("textarea").each(function () {
+        $.CK($(this).attr('id').toString(), '@Url.Content("~/Areas/Admin/Content/plugins/ck/ckfinder/")');
+    });
+    </script>
+}

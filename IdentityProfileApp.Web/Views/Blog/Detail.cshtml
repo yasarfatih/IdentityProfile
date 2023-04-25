@@ -1,0 +1,281 @@
+﻿@model IdentityProfileApp.Domain.Entities.ViewModels.ArticleWithCommentVM
+@using IdentityProfileApp.Web.BLL
+<div class="body-inner">
+    <input type="hidden" value="@Model.Article.Id" id="mId" />    <!-- Page Content -->
+    <section id="page-content" class="sidebar-right">
+        <div class="container">
+            <div class="row">
+                <!-- content -->
+                <div class="content col-lg-9">
+                    <!-- Blog -->
+                    <div id="blog" class="single-post">
+                        <!-- Post single item-->
+                        <div class="post-item">
+                            <div class="post-item-wrap">
+                                <!--  Media-->
+                                <div class="post-video">
+                                    @{
+                                        if (!string.IsNullOrEmpty(Model.Article.VideoSource))
+                                        {
+                                            <iframe width="560" height="315" src="@Model.Article.VideoSource" frameborder="0" allowfullscreen></iframe>
+                                        }
+                                        else
+                                        {
+                                            <a href="#">
+                                                <img alt="" src="/Content/Article/Image/@Model.Article.Image">
+                                            </a>
+                                        }
+                                    }
+                                </div>
+                                <!-- end: Media-->
+                                <!--Description-->
+                                <div class="post-item-description">
+                                    <h2>@Html.Raw(Model.Article.Header)</h2>
+                                    <div class="post-meta">
+                                        <span class="post-meta-date"><i class="fa fa-calendar-o"></i>@Model.Article.CreateDate</span>
+                                        <span class="post-meta-comments"><a href=""><i class="fa fa-comments-o"></i>@Model.Comments.Count().ToString() Comments</a></span>
+                                        <span class="post-meta-category"><a href=""><i class="fa fa-tag"></i>@ArticleBLL.GetCategoryById(Model.Article.CategoryId).CategoryName</a></span>
+                                        <div class="post-meta-share">
+                                            <a class="btn btn-xs btn-slide btn-twitter" href="#" data-width="100">
+                                                <i class="fab fa-twitter"></i>
+                                                <span>Twitter</span>
+                                            </a>
+                                            <a class="btn btn-xs btn-slide btn-instagram" href="#" data-width="118">
+                                                <i class="fab fa-instagram"></i>
+                                                <span>Instagram</span>
+                                            </a>
+                                            <a class="btn btn-xs btn-slide btn-googleplus" href="mailto:#" data-width="80">
+                                                <i class="icon-mail"></i>
+                                                <span>Mail</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <p>@Html.Raw(Model.Article.Body)</p>
+                                </div>
+                                <!-- end: Description-->
+                                <!-- Navigation -->
+                                <div class="post-navigation">
+
+                                    @{
+                                        var prearticle = ArticleBLL.GetArticle(Model.Article, ArticleBLL.ArticleType.Previous);
+
+                                        if (prearticle != null)
+                                        {
+                                            <a href="@Url.Action("Detail","Blog",new { id=prearticle.Id.ToString()})" class="post-prev">
+                                                <div class="post-prev-title"><span>Previous Post</span>@Html.Raw(prearticle.Header)</div>
+                                            </a>
+                                        }
+
+                                    }
+
+                                    <a href="@Url.Action("Index","Blog")" class="post-all">
+                                        <i class="icon-grid"> </i>
+                                    </a>
+                                    @{
+                                        var nxtarticle = ArticleBLL.GetArticle(Model.Article, ArticleBLL.ArticleType.Next);
+
+                                        if (nxtarticle != null)
+                                        {
+                                            <a href="@Url.Action("Detail","Blog",new { id=nxtarticle.Id.ToString()})" class="post-next">
+                                                <div class="post-next-title"><span>Next Post</span>@Html.Raw(nxtarticle.Header)</div>
+                                            </a>
+                                        }
+                                    }
+
+                                </div>
+                                <!-- end: Navigation -->
+                                <!-- Comments -->
+                                @Html.Partial("_CommentPartial", Model.Comments)
+                                <!-- end: Comments -->
+                                <!--add coment-->
+                                @Html.Partial("_AddCommentPartial")
+                                <!--end: add coment-->
+                            </div>
+                        </div>
+                        <!-- end: Post single item-->
+                    </div>
+                </div>
+                <!-- end: content -->
+                <!-- Sidebar-->
+                <div class="sidebar sticky-sidebar col-lg-3">
+                    <!--widget newsletter-->
+                    <div class="widget  widget-newsletter">
+                        <form id="widget-search-form-sidebar" action="search-results-page.html" method="get">
+                            <div class="input-group">
+                                <input type="text" aria-required="true" name="q" class="form-control widget-search-form" placeholder="Search for pages...">
+                                <div class="input-group-append">
+                                    <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!--end: widget newsletter-->
+                
+                <!--Tabs with Posts-->
+                <div class="widget">
+                    <div class="tabs">
+                        <ul class="nav nav-tabs" id="tabs-posts" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#popular" role="tab" aria-controls="popular" aria-selected="true">Popular</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#recent" role="tab" aria-controls="recent" aria-selected="false">Recent</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="tabs-posts-content">
+                            <div class="tab-pane fade show active" id="popular" role="tabpanel" aria-labelledby="popular-tab">
+                                <div class="post-thumbnail-list">
+                                    @{
+                                        var popularArticles = ArticleBLL.GetPopularArticles(3);
+                                        for (int i = 0; i < popularArticles.Count; i++)
+                                        {
+                                            <div class="post-thumbnail-entry">
+                                                <img alt="" src="~/Content/Article/thumb/@popularArticles[i].Image">
+                                                <div class="post-thumbnail-content">
+                                                    <a href="@Url.Action("Detail","Blog",new{id=popularArticles[i].Id})">@popularArticles[i].Header</a>
+                                                    <span class="post-date">
+                                                        <i class="icon-clock"></i>
+                                                        @{
+                                                            string text = "";
+                                                            var dif = DateTime.Now - (DateTime)popularArticles[i].PublishDate;
+                                                            if (dif.TotalMinutes < 0)
+                                                            {
+                                                                text = "Just Now";
+                                                            }
+                                                            else if (dif.TotalHours < 0)
+                                                            {
+                                                                text = string.Format("{0}m ago", ((int)dif.TotalMinutes).ToString());
+                                                            }
+                                                            else if (dif.TotalDays < 1)
+                                                            {
+                                                                text = string.Format("{0}h ago", ((int)dif.Hours).ToString());
+                                                            }
+                                                            else if (dif.TotalDays > 1)
+                                                            {
+                                                                text = string.Format("{0}d ago", ((int)dif.Days).ToString());
+                                                            }
+                                                        }
+                                                        @text
+                                                    </span>
+                                                    <span class="post-category"><i class="fa fa-tag"></i>@popularArticles[i].Category.CategoryName</span>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="recent" role="tabpanel" aria-labelledby="recent-tab">
+                                <div class="post-thumbnail-list">
+                                    @{
+                                        var latestArticles = ArticleBLL.GetLatestArticles(3);
+                                        for (int i = 0; i < latestArticles.Count; i++)
+                                        {
+                                            <div class="post-thumbnail-entry">
+                                                <img alt="" src="~/Content/Article/thumb/@latestArticles[i].Image">
+                                                <div class="post-thumbnail-content">
+                                                    <a href="@Url.Action("Detail","Blog",new{id=latestArticles[i].Id})">@latestArticles[i].Header</a>
+                                                    <span class="post-date">
+                                                        <i class="icon-clock"></i>
+                                                        @{
+                                                            string text = "";
+                                                            var dif = DateTime.Now - (DateTime)latestArticles[i].PublishDate;
+                                                            if (dif.TotalMinutes < 0)
+                                                            {
+                                                                text = "Just Now";
+                                                            }
+                                                            else if (dif.TotalHours < 0)
+                                                            {
+                                                                text = string.Format("{0}m ago", ((int)dif.TotalMinutes).ToString());
+                                                            }
+                                                            else if (dif.TotalDays < 1)
+                                                            {
+                                                                text = string.Format("{0}h ago", ((int)dif.Hours).ToString());
+                                                            }
+                                                            else if (dif.TotalDays > 1)
+                                                            {
+                                                                text = string.Format("{0}d ago", ((int)dif.Days).ToString());
+                                                            }
+                                                        }
+                                                        @text.ToString()
+                                                    </span>
+                                                    <span class="post-category"><i class="fa fa-tag"></i>@latestArticles[i].Category.CategoryName</span>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--End: Tabs with Posts-->
+                <!-- Twitter widget -->
+                <div class="widget widget-tweeter" data-username="muratysr7" data-limit="2">
+                    <h4 class="widget-title">Recent Tweets</h4>
+                </div>
+                <!-- end: Twitter widget-->
+            </div>
+            <!-- end: Sidebar-->
+        </div>
+</div>
+    </section>
+<!-- end: Page Content -->
+</div>
+
+<div class="mfp-content">
+    <div id="modalReply" class="modal" style="max-width:780px;max-height:460px">
+        <div class="respond-form" id="respond">
+            <div class="respond-comment">
+                <span>Reply</span>
+            </div>
+            <form class="form-gray-fields">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label class="upper" for="comment">Your comment</label>
+                            <textarea class="form-control required" name="reply" rows="9" placeholder="Enter comment" id="reply" aria-required="true"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group text-center">
+                            <button class="btn" id="add-reply" type="submit">Submit Comment</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $().ready(function () {
+
+            var subCommentId = "";
+
+            $(".reply").click(function () {
+                subCommentId = $(this).attr("id").toString();
+            });
+
+            $('#add-comment').click(function () {
+                var comment = $("#comment").val();
+                var articleId = $("#mId").val();
+                AddComment('@Url.Action("AddComment", "Blog")', comment, articleId);
+            });
+
+            $('#add-reply').click(function () {
+
+                var comId = subCommentId + "";
+                var reply = $("#reply").val();
+                var articleId = $("#mId").val();
+                AddReply('@Url.Action("AddReply", "Blog")',reply, articleId, comId);
+            });
+
+        });
+
+    </script>
+}

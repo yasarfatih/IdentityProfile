@@ -1,0 +1,113 @@
+﻿@model IEnumerable<IdentityProfileApp.Domain.Entities.Models.PaymentPackage>
+@using IdentityProfileApp.Utils.Extensions
+@{ ViewBag.Title = "Görev Liste";}
+<header>
+    <span class="tools pull-right">
+        <a href="javascript:;"><i class="fa fa-chevron-down"></i></a>
+        <a href="javascript:;"><i class="fa fa-cog fa-chevron-down"></i></a>
+        <a href="javascript:;"><i class="fa fa-times"></i></a>
+    </span>
+</header>
+<div class="panel-body">
+    <div class="adv-table">
+        <div class="clearfix">
+            <div class="btn-group">
+                <a href="@Url.Action("Create","Package")" class="btn btn-primary">Yeni Ekle &nbsp; <i class="fa fa-plus"></i></a>
+            </div>
+            <div class="btn-group pull-right">
+                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Seçenekler <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right">
+                    <li><a href="#">Print</a></li>
+                    <li><a href="#">Save as PDF</a></li>
+                    <li><a href="#">Export to Excel</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="space15"></div>
+        <table class="display dataTable no-footer table-bordered" id="package">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Price)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PaymentType)
+                    </th>
+                    <th>
+                        İşlemler
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @{
+                    foreach (var payment in Model)
+                    {
+                        <tr class="row-@payment.Id">
+                            <td>@Html.DisplayFor(modelItem => payment.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => payment.Price)</td>
+                            <td>@payment.PaymentType.GetDisplayName()</td>
+                            <td>
+                                <div class="pull-right">
+
+                                    <a href="@Url.Action("Update","Package",new {id=payment.Id })" class="btn btn-success">Güncelle &nbsp; <i class="fa fa-pencil"></i></a>
+                                    <a href="#" class="btn btn-danger delete" data-id="@payment.Id">Sil &nbsp; <i class="fa fa-trash-o"></i></a>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div class="btn-group">
+            <a href="@Url.Action("Index","Home")" class="btn btn-primary"><i class="fa fa-home"></i></a>
+        </div>
+    </div>
+</div>
+
+@section styles{
+
+    @Styles.Render("~/Admin/jconfirm/css")
+
+    @Styles.Render("~/Admin/DataTable/css")
+
+}
+
+@section scripts{
+
+    @Scripts.Render("~/Admin/jconfirm/js");
+
+    @Scripts.Render("~/Admin/DataTable/js")
+    <!--Silme işlemini ajax yardımıyla tetikliyoruz-->
+    <script>
+         $().ready(function () {
+            $(".delete").click(function () {
+                var id = $(this).data('id');
+                $.ShowConfirm("Paket Silinecek", "Paket tamamen silinecek. Devam edilsin mi?", "Evet Silebilirsin", function () {
+                    //Evet butonuna bastı
+                    //silme işlemini ajax ile gerçekleştir
+                    $.Delete('@Url.Action("Delete","Package")', id, function (result) {
+                        //Silme işlemini yapan action'dan gelen cevabı yakalıyoruz.
+                        if (result.Status == "ok") {
+                            $.ShowSuccess("İşlem başarılı", result.Message, "Tamam");
+                            $(".row-" + id).hide(300, function () {
+                                $(".row-" + id).remove();
+                            })
+                        }
+                        else {
+                            $.ShowError("Hata oluştu", result.Message, "Tamam");
+                        }
+                    })
+                }, "Vazgeçtim")
+            })
+        })
+        $(('#package')).DataTable();
+    </script>
+}

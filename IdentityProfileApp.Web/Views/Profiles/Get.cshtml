@@ -1,0 +1,93 @@
+﻿@model IdentityProfileApp.Domain.Entities.Models.Profile
+@using IdentityProfileApp.Domain.Entities.DTO
+@using IdentityProfileApp.Domain.Entities.Models
+@using IdentityProfileApp.Utils.Extensions
+@using IdentityProfileApp.Web.BLL
+
+@{
+    List<Feature> features = Model.Features.Cast<Feature>().OrderBy(x => x.Order).ToList();
+}
+@section dotmenu{
+    <div class="container">
+        <nav id="dotsMenu">
+            <ul id="dotMenu">
+                @for (int i = 0; i < features.Count; i++)
+                {
+                    <li><a href="@string.Format("#section{0}", i.ToString())"><span>@features[i].Characteristic.GetDisplayName()</span></a></li>
+                }
+            </ul>
+        </nav>
+    </div>
+}
+
+
+<section id="slider" class="inspiro-slider slider-fullscreen dots-creative" data-height-xs="360">
+    <div class="slide" data-bg-image="/Content/images/uriel.jpg">
+        <div class="bg-overlay"></div>
+        <div class="container">
+            <div class="slide-captions text-center text-light">
+                <h1 data-animate="fadeInUp" data-animate-delay="600">@Model.Title / @Model.Name</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+@{
+    for (int i = 0; i < features.Count; i++)
+    {
+        <section id="@string.Format("section{0}", i.ToString())">
+            <div class="container">
+                <div class="row">
+                    <div class="center">
+                        <div class="heading-text heading-section text-center" data-animate="fadeInUp">
+                            <h2>@features[i].Title</h2>
+                            <p class="lead">@Html.Raw(features[i].Body)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+}
+
+
+@section scripts{
+    <script>
+        $().ready(function () {
+            var dotMenu = $("#dotMenu"),
+                dotMenuHeight = dotMenu.outerHeight() + 15,
+                // All list items
+                menuItems = dotMenu.find("a"),
+                // Anchors corresponding to menu items
+                scrollItems = menuItems.map(function () {
+                    var item = $($(this).attr("href"));
+                    if (item.length) { return item; }
+                });
+
+            // Bind to scroll
+            $(window).scroll(function () {
+                // Get container scroll position
+                var fromTop = $(this).scrollTop() + dotMenuHeight;
+
+                // Get id of current scroll item
+                var cur = scrollItems.map(function () {
+                    if ($(this).offset().top < fromTop)
+                        return this;
+                });
+                // Get the id of the current element
+                cur = cur[cur.length - 1];
+                var id = cur && cur.length ? cur[0].id : "";
+                // Set/remove active class
+                menuItems
+                    .parent().removeClass("current")
+                    .end().filter("[href='#" + id + "']").parent().addClass("current")
+                    .filter("[href='#" + id + "']").children("span").fadeIn().delay(2000).fadeOut();
+
+            })
+
+            $("#dotMenu li>a").click(function () {
+                $(this).children().fadeIn().delay(2000).fadeOut();
+            });
+        });
+    </script>
+}

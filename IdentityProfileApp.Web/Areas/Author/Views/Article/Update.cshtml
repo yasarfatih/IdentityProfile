@@ -1,0 +1,102 @@
+﻿@model IdentityProfileApp.Domain.Entities.ViewModels.ArticleWithImage
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Update</title>
+</head>
+@using (Html.BeginForm("Update", "Article", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.HiddenFor(x => Model.Article.Id)
+        @Html.HiddenFor(x => Model.Article.IsPublished)
+        @Html.HiddenFor(x => Model.Article.UserId)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Article.Header, new { @class = "col-md-2 control-label Bold " })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Article.Header, new { @id = Model.Article.Id })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Article.Summary, new { @class = "col-md-2 control-label Bold " })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Article.Summary, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Article.Body, new { @class = "col-md-2 control-label Bold " })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Article.Body, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Article.Footer, new { @class = "col-md-2 control-label Bold " })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Article.Footer, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => Model.Article.CategoryId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => Model.Article.CategoryId, TempData["categories"] == null ? new List<SelectListItem>() : (IEnumerable<SelectListItem>)TempData["categories"], new
+           {
+               @class = "form-control",
+               id = "category"
+           })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Article.VideoSource, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Article.VideoSource, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Article.Image, htmlAttributes: new { @class = "control-label col-md-2" })
+
+            <div class="col-md-10">
+                <img src="/Content/Article/thumb/@Model.Article.Image" style="margin:5px" ; />
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PostedImage, htmlAttributes: new { @class = "control-label col-md-2" })
+
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PostedImage, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-offset-2 col-2">
+            <input type="submit" class="btn btn-success form-control" value="Kaydet" />
+        </div>
+        <div>
+            <a href="@Url.Action("List","Article")" class="btn btn-info">Makale listesine Dön &nbsp;<i class="fas fa-undo"></i></a>
+        </div>
+    </div>
+}
+@section scripts{
+
+    @Scripts.Render("~/Admin/ckEditor")
+    @Scripts.Render("~/Admin/cropper/js")
+    <script type="text/javascript">
+        $("textarea").each(function () {
+            $.CK($(this).attr('id').toString(), '@Url.Content("~/Areas/Admin/Content/plugins/ck/ckfinder/")');
+        });
+
+        $.CropImage('@Html.IdFor(m=>m.PostedImage)',525/350);
+    </script>
+}
+
+@section styles{
+    @Styles.Render("~/Admin/cropper/css")
+}

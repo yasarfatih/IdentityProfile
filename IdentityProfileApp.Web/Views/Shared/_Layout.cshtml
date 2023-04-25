@@ -1,0 +1,169 @@
+﻿<head>
+    @*<meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta name="author" content="INSPIRO" />
+        <meta name="description" content="Themeforest Template Polo, html template">
+        <link rel="icon" type="image/png" href="images/favicon.png">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">*@
+    <!-- Document title -->
+    <title>Identity</title>
+    <!-- Stylesheets & Fonts -->
+    <link href="/Content/css/plugins.css" rel="stylesheet" />
+    <link href="/Content/css/style.css" rel="stylesheet" />
+    <link href="~/Content/plugins/bootstrap-switch/bootstrap-switch.css" rel="stylesheet" />
+    @RenderSection("styles", false)
+</head>
+
+<body>
+
+    <!-- Body Inner -->
+    <div class="body-inner">
+        <!-- Header -->
+        <header id="header" data-fullwidth="true" class="header-modern dark">
+            <div class="header-inner">
+                <div class="container">
+                    <!--Logo-->
+                    <div id="logo">
+                        <a href="@Url.Action("Index", "Home")">
+                            <span class="logo-default">IDENTITY</span>
+                            <span class="logo-dark">IDENTITY</span>
+                        </a>
+                    </div>
+                    <!--End: Logo-->
+                    <!-- Search -->
+                    <div id="search">
+                        <a id="btn-search-close" class="btn-search-close" aria-label="Close search form"><i class="icon-x"></i></a>
+                        <form class="search-form" action="search-results-page.html" method="get">
+                            <input class="form-control" name="q" type="text" placeholder="Type & Search..." />
+                            <span class="text-muted">Start typing & press "Enter" or "ESC" to close</span>
+                        </form>
+                    </div>
+                    <!-- end: search -->
+                    @{Html.RenderPartial("HeaderExtrasPartial"); }
+                    <!--Navigation Resposnive Trigger-->
+                    <div id="mainMenu-trigger">
+                        <a class="lines-button x"><span class="lines"></span></a>
+                    </div>
+                    @*end: Navigation Resposnive Trigger*@
+                    @{Html.RenderPartial("_MainMenuPartial"); }
+                </div>
+            </div>
+            @RenderSection("dotmenu", false)
+        </header>
+
+        @Html.Partial("_MessagePartial")
+        <!-- end: Header -->
+        <!-- Body -->
+        @RenderBody()
+        <!-- end: Body -->
+        <!-- Footer -->
+        <footer id="footer">
+            <div class="footer-content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <div class="widget">
+                                <div class="widget-title">Polo HTML5 Template</div>
+                                <p class="mb-5">Built with love in Fort Worth, Texas, USA<br> All rights reserved. Copyright © 2019. INSPIRO.</p>
+                                <a href="https://themeforest.net/item/polo-responsive-multipurpose-html5-template/13708923" class="btn btn-inverted" target="_blank">Purchase Now</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-7">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="widget">
+                                        <div class="widget-title">Discover</div>
+                                        <ul class="list">
+                                            <li><a href="#">Features</a></li>
+                                            <li><a href="#">Layouts</a></li>
+                                            <li><a href="#">Corporate</a></li>
+                                            <li><a href="#">Updates</a></li>
+                                            <li><a href="#">Pricing</a></li>
+                                            <li><a href="#">Customers</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="widget">
+                                        <div class="widget-title">Features</div>
+                                        <ul class="list">
+                                            <li><a href="#">Layouts</a></li>
+                                            <li><a href="#">Headers</a></li>
+                                            <li><a href="#">Widgets</a></li>
+                                            <li><a href="#">Footers</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="widget">
+                                        <div class="widget-title">Pages</div>
+                                        <ul class="list">
+                                            <li><a href="#">Portfolio</a></li>
+                                            <li><a href="#">Blog</a></li>
+                                            <li><a href="#">Shop</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="widget">
+                                        <div class="widget-title">Support</div>
+                                        <ul class="list">
+                                            <li><a href="#">Help Desk</a></li>
+                                            <li><a href="#">Documentation</a></li>
+                                            <li><a href="#">Contact Us</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright-content">
+                <div class="container">
+                    <div class="copyright-text text-center">&copy; @DateTime.Now.Year.ToString() Identity Tüm Hakları Saklıdır.<a href="@Url.Action("Index","Home")" target="_blank" rel="noopener"> INSPIRO</a> </div>
+                </div>
+            </div>
+        </footer>
+        <!-- end: Footer -->
+    </div>
+    <!-- end: Body Inner -->
+    <!-- Scroll top -->
+    <a id="scrollTop"><i class="icon-chevron-up"></i><i class="icon-chevron-up"></i></a>
+    <!--Plugins-->
+    <script src="~/Content/js/jquery.js"></script>
+    <script src="~/Content/js/plugins.js"></script>
+    <!--Template functions-->
+    <script src="~/Content/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
+    <script src="~/Content/js/functions.js"></script>
+    <script src="~/Content/js/App.js"></script>
+    <script src="~/Areas/Admin/Content/js/global.js"></script>
+    @RenderSection("scripts", false)
+    <script>
+        $().ready(function () {
+            var interval = 1000;
+            var expected = Date.now() + interval;
+            setTimeout(step, interval);
+            function step() {
+                var dt = Date.now() - expected;
+                if (dt > interval) {
+                    return;
+                }
+                var success = document.getElementById("success");
+                var error = document.getElementById("error");
+                if (success !== null) {
+                    $.notifyAlert("danger", "Hata", error.value, "icon-check-circle", { "in": "bounceIn", "out": "bounceOut", "from": "top", "align": "center", "timer": "2000" });
+                }
+                else if (error !== null) {
+                    interval = 0;
+                    $.notifyAlert("danger", "Hata", error.value, "icon-check-circle", { "in": "bounceIn", "out": "bounceOut", "from": "top", "align": "center", "timer": "5000" });
+                    $("#error").remove();
+                }
+                interval = 1000;
+                expected += interval;
+                setTimeout(step, Math.max(0, interval - dt));
+            }
+        });
+    </script>
+</body>
+

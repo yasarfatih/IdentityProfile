@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <Parent controller="Home" action="Index" title="Anasayfa" icon="fa fa-home">
+  </Parent>
+  <Parent controller="Article" title="Makale İşlemleri" icon="far fa-icon-file-text">
+    <child action="Create" icon="fa fa-plus">Makale Ekle</child>
+    <child action="List" icon="fa fa-pencil">Güncelle</child>
+  </Parent>
+</root>

@@ -1,0 +1,47 @@
+﻿@using System.Xml.Linq;
+<div class="leftside-navigation">
+    <ul class="sidebar-menu" id="nav-accordion">
+        @{
+            XElement xml;
+            if (Cache["authorMenu"] == null)
+            {
+                var sidebarxml = Server.MapPath("~/Models/AuthorLeftMenu.xml");
+
+                xml = XElement.Load(sidebarxml);
+
+                Cache.Insert("authorMenu", xml, new System.Web.Caching.CacheDependency(sidebarxml));
+
+            }
+            else
+            {
+                xml = Cache["authorMenu"] as XElement;
+            }
+
+            var controller = ViewContext.RouteData.Values["controller"].ToString();
+            var action = ViewContext.RouteData.Values["action"].ToString();
+            foreach (var element in xml.Elements("Parent"))
+            {
+                <li class="sub-menu">
+
+                    <a href="@((element.Elements("child").Count() == 0) ? Url.Action(element.Attribute("action").Value.ToString(), element.Attribute("controller").Value.ToString()):"javascript:;")" class="@((element.Attribute("controller").Value==controller?"active":""))">
+                        <i class="@element.Attribute("icon").Value"></i>
+                        <span>@element.Attribute("title").Value</span>
+                    </a>
+                    <ul class="sub">
+                        @foreach (var item in element.Elements("child"))
+                        {
+                            var cls = (((item.Attribute("action").Value == action && element.Attribute("controller").Value == controller) ? "active" : ""));
+                            <li class="@cls">
+                                <a class="@cls" href="@Url.Action(item.Attribute("action").Value,element.Attribute("controller").Value)">
+                                    <i class="@item.Attribute("icon").Value"></i>
+                                    <span>@item.Value</span>
+                                </a>
+                            </li>
+
+                        }
+                    </ul>
+                </li>
+            }
+        }
+    </ul>
+</div>

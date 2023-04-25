@@ -1,0 +1,62 @@
+﻿@model IEnumerable<IdentityProfileApp.Domain.Entities.Models.Comment>
+@using IdentityProfileApp.Web.BLL
+@using IdentityProfileApp.Domain.Entities.ViewModels
+@if (Model != null)
+{
+    <div class="comments" id="comments">
+        <div class="comment_number">
+            Comments<span>(@Model.Count().ToString())</span>
+        </div>
+        <div class="comment-list">
+            <!-- Comment -->
+            @foreach (var comment in Model.Where(m => m.CommentId == Guid.Empty).ToList())
+            {
+                <div class="comment" id="comment-2">
+                    @{
+                        var user = ArticleBLL.GetUserByCommentId(comment.Id);
+
+                        <input type="hidden" value="@comment.Id" id="commentId" />
+                        <div class="image"><img alt="" src="/Content/User/Avatar/@user.Image" class="avatar"></div>
+                        <div class="text">
+                            <h5 class="name">@string.Format("{0} {1}", user.Name, user.Surname)</h5>
+                            <span class="comment_date">@string.Format("Posted at {0}", comment.CreateDate)</span>
+                            @if (!string.IsNullOrEmpty(User.Identity.Name))
+                            {
+                                <a href="#modalReply" id="@comment.Id" class="reply" data-lightbox="inline">Reply</a>
+                            }
+                            <div class="text_holder">
+                                <p>@comment.Message</p>
+                            </div>
+                        </div>
+
+                    }
+                    @{
+                        var subComments = ArticleBLL.GetSubComments(comment.Id);
+
+                        if (subComments.Count > 0)
+                        {
+                            List<SubCommentVM> subCommentVM = new List<SubCommentVM>();
+                            foreach (var subComment in subComments)
+                            {
+                                var replier = ArticleBLL.GetUserById(subComment.UserId);
+                                subCommentVM.Add(new SubCommentVM()
+                                {
+                                    Comment = subComment,
+                                    Replier = replier,
+                                    Replied = user
+                                });
+                            }
+                            Html.RenderPartial("_SubComments",subCommentVM);
+                        }
+                    }
+
+
+                </div>
+
+            }
+        </div>
+    </div>
+}
+
+
+

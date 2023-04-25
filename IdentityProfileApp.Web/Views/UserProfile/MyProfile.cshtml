@@ -1,0 +1,154 @@
+﻿@model IdentityProfileApp.Domain.Entities.Models.UserProfile
+@using IdentityProfileApp.Utils.Extensions;
+@using IdentityProfileApp.Web.Extensions
+@using IdentityProfileApp.Domain.Entities.Models
+
+<!-- SECTION FULLSCREEN -->
+<section class="parallax text-light fullscreen" data-bg-parallax="images/parallax/17.jpg">
+    <div class="container">
+        <div class="container-fullscreen">
+            <div class="text-middle text-center text-right">
+                <h1 class="text-uppercase text-medium" data-animate="fadeInDown" data-animate-delay="100">
+                    @Model.User.Name @Model.User.Surname
+                </h1>
+                @if (Model.Profile != null)
+                {
+                    <p class="lead" data-animate="fadeInDown" data-animate-delay="300">@Model.Profile.Title / @Model.Profile.Name</p>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+@if (Model.Profile == null)
+{
+    <div class="heading-text heading-section text-center m-t-50 m-b-50">
+        <h2>Henüz Test Yapmadınız mı?</h2>
+        <p>Lorem ipsum dolor sit amet, consecte adipiscing elit. Suspendisse condimentum porttitor cursumus.</p>
+    </div>
+}
+else
+{
+
+    var introduction = Model.Profile.Features.Cast<Feature>().Where(x => x.Characteristic == IdentityProfileApp.Domain.Entities.Enums.Characteristics.Inroduction).FirstOrDefault();
+
+    <!-- end: SECTION FULLSCREEN -->
+    <section>
+        <div class="container">
+            <div class="row m-b-20">
+                <div class="col-lg-3">
+                    <div class="heading-text heading-section">
+                        <h2>@Model.Profile.Name</h2>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            @Html.Raw(introduction.Body)
+                        </div>
+                    </div>
+                    <div class="row m-t-5">
+                        <div class="col-lg-12">
+                            <a href="#" class="btn btn-block">Detaylı Görünüm  için tıklayınız</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <section class="container-fluid">
+        <div class="row m-b-60">
+            <div class="col-lg-12">
+                <div class="row">
+
+                    @for (int i = 0; i < Model.Stats.Split(',').Length; i)
+                    {
+                        <div class="col-lg-3 col-md-12 text-center">
+
+
+                            @switch (i)
+                            {
+                                case 0:
+                                    <span class="pie-chart" data-percent="@Model.Stats.Split(',')[i]" data-pe data-color="@Model.Profile.Part1.GetPartColor()" data-width="4">
+                                        <span class="percent"></span>
+                                    </span>
+                                    <h4>
+                                        <span class="part" style="color:@Model.Profile.Part1.GetPartColor()">@Model.Profile.Part1.GetDisplayName().ToString()</span>
+                                        <span class="part-opposite" style="color:rgba(0,0,0,0.22);">
+                                            / @Model.Profile.Part1.GetOppositePart().GetDisplayName()
+                                        </span>
+
+                                    </h4>
+                                    break;
+                                case 1:
+                                    <span class="pie-chart" data-percent="@Model.Stats.Split(',')[i]" data-pe data-color="@Model.Profile.Part2.GetPartColor()" data-width="4">
+                                        <span class="percent"></span>
+                                    </span>
+                                    <h4>
+                                        <span class="part" style="color:@Model.Profile.Part2.GetPartColor()">@Model.Profile.Part2.GetDisplayName().ToString()</span>
+                                        <span class="part-opposite" style="color:rgba(0,0,0,0.22);">/ @Model.Profile.Part2.GetOppositePart().GetDisplayName()</span>
+                                    </h4>
+                                    break;
+                                case 2:
+                                    <span class="pie-chart" data-percent="@Model.Stats.Split(',')[i]" data-pe data-color="@Model.Profile.Part3.GetPartColor()" data-width="4">
+                                        <span class="percent"></span>
+                                    </span>
+                                    <h4>
+                                        <span class="part" style="color:@Model.Profile.Part3.GetPartColor()">@Model.Profile.Part3.GetDisplayName().ToString()</span>
+                                        <span class="part-opposite" style="color:rgba(0,0,0,0.22);">/ @Model.Profile.Part3.GetOppositePart().GetDisplayName()</span>
+
+                                    </h4>
+                                    break;
+                                case 3:
+                                    <span class="pie-chart" data-percent="@Model.Stats.Split(',')[i]" data-pe data-color="@Model.Profile.Part4.GetPartColor()" data-width="4">
+                                        <span class="percent"></span>
+                                    </span>
+                                    <h4>
+                                        <span class="part" style="color:@Model.Profile.Part4.GetPartColor()">@Model.Profile.Part4.GetDisplayName().ToString()</span>
+                                        <span class="part-opposite" style="color:rgba(0,0,0,0.22);">/ @Model.Profile.Part4.GetOppositePart().GetDisplayName()</span>
+
+                                    </h4>
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="box-fancy section-fullwidth text-light p-b-0">
+        <div class="row">
+            <div class="col-lg-4" style="background-color: rgb(241, 183, 50);">
+                <h1 class="text-lg text-uppercase">01.</h1>
+                <h3>CONCEPT</h3>
+                <span>The most happiest time of the day!. Morbi sagittis, sem quis lacinia faucibus, orci ipsum gravida tortor, vel interdum mi sapien ut justo. Nulla varius consequat magna, id molestie ipsum volutpat quis. A true story, that never been told!. </span>
+            </div>
+            <div class="col-lg-4" style="background-color: rgb(252, 196, 63);">
+                <h1 class="text-lg text-uppercase">02.</h1>
+                <h3>DEVELOPMENT</h3>
+                <span>The most happiest time of the day!. Morbi sagittis, sem quis lacinia faucibus, orci ipsum gravida tortor, vel interdum mi sapien ut justo. Nulla varius consequat magna, id molestie ipsum volutpat quis. A true story, that never been told!. </span>
+            </div>
+            <div class="col-lg-4" style="background-color: rgb(253, 206, 73);">
+                <h1 class="text-lg text-uppercase">03.</h1>
+                <h3>TESTING</h3>
+                <span>The most happiest time of the day!. Morbi sagittis, sem quis lacinia faucibus, orci ipsum gravida tortor, vel interdum mi sapien ut justo. Nulla varius consequat magna, id molestie ipsum volutpat quis. A true story, that never been told!. </span>
+            </div>
+
+        </div>
+    </section>
+    <section class="row m-t-10">
+        <div class="col-2"></div>
+        <button type="button" class="btn btn-light text-white btn-creative btn-icon-holder btn-shadow btn-light-hover btn-rounded col-8 bg-primary">
+            Premium Edin<i class="icon-chevron-right"></i>
+        </button>
+        <div class="col-2"></div>
+    </section>
+
+
+
+}

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<part name="E" opposite="I" color="#0000FF"></part>
+	<part name="I" opposite="E" color="#FF69B4"></part>
+	<part name="N" opposite="S" color="#FF69B4"></part>
+	<part name="S" opposite="N" color="#ACFA58"></part>
+	<part name="T" opposite="F" color="#FF4500"></part>
+	<part name="F" opposite="T" color="#819FF7"></part>
+	<part name="J" opposite="P" color="#FFD700"></part>
+	<part name="P" opposite="J" color="#FFFF00"></part>
+</root>

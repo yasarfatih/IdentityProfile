@@ -1,0 +1,97 @@
+﻿@model IdentityProfileApp.Domain.Entities.Models.Profile
+@using IdentityProfileApp.Utils.Extensions
+@{ ViewBag.Title = "Kullanıcı Güncelle";}
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    @using (Html.BeginForm("Update", "Profile"))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            @Html.HiddenFor(model => model.Id)
+            <div class="form-group">
+                @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Part1, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EnumDropDownListFor(model => model.Part1, "Seçiniz", new { @class = "form-control block" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Part2, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EnumDropDownListFor(model => model.Part2, "Seçiniz", new { @class = "form-control block" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Part3, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EnumDropDownListFor(model => model.Part3, "Seçiniz", new { @class = "form-control block" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Part4, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EnumDropDownListFor(model => model.Part4, "Seçiniz", new { @class = "form-control block" })
+                </div>
+            </div>
+            @{
+                List<IdentityProfileApp.Domain.Entities.Models.Feature> features = Model.Features.Cast<IdentityProfileApp.Domain.Entities.Models.Feature>().ToList();
+
+                for (int i = 0; i < features.Count; i++)
+                {
+                    string id = string.Format("feature_{0}", i.ToString());
+
+                    <div class="form-group row">
+                        @Html.HiddenFor(model => features[i].Id)
+                        @Html.HiddenFor(model => features[i].Characteristic)
+                        @Html.HiddenFor(model => features[i].ProfileId)
+                        @Html.HiddenFor(model => features[i].Title)
+                        <label class="col-md-2">@features[i].Characteristic.GetDisplayName()</label>
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => features[i].Body, new { htmlAttributes = new { @class = "form-control", id = id } })
+                        </div>
+                    </div>
+                }
+            }
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Update" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+
+    }
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+</body>
+@section scripts{
+    <script>
+        $(".block").change(function () {
+            $('.selected').removeClass('selected');
+            // And lets add selected to currect element and this parent
+            $(this).addClass('selected');
+        });
+    </script>
+    @Scripts.Render("~/Admin/ckEditor")
+    <script type="text/javascript">
+         var list = [];
+        $("textarea").each(function () {
+            list.push($(this).attr('id'));
+        })
+        console.log(list);
+        for (var i = 0; i < list.length; i++) {
+             $.CK(list[i], '@Url.Content("~/Areas/Admin/Content/plugins/ck/ckfinder/")');
+        }
+    </script>
+
+}
